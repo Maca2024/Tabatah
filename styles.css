@@ -1,86 +1,41 @@
-/* styles.css */
-body {
-    background-color: #1E1E1E;
-    color: #E1E1E1;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OERTIMER - Ultimate Tabata Timer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <img src="OERLOGO.png" alt="OERTIMER Logo" class="logo">
+        </div>
+    </header>
 
-header {
-    width: 100%;
-    text-align: center;
-    margin-top: 20px;
-}
+    <main>
+        <div class="timer-container">
+            <div id="timeDisplay" class="timer">00:20</div>
+            <div class="progress-ring">
+                <!-- Optionally, an SVG progress ring can go here -->
+            </div>
+        </div>
 
-.logo {
-    width: 150px;
-    height: auto;
-}
+        <div class="controls">
+            <button id="startButton" class="dark-button">Start</button>
+            <button id="resetButton" class="blue-button">Reset</button>
+        </div>
+    </main>
 
-.timer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 50px;
-}
+    <footer>
+        <p>OERTIMER &copy; 2024</p>
+    </footer>
 
-.timer {
-    font-size: 5rem;
-    font-weight: bold;
-    color: #FFFFFF;
-}
+    <!-- Audio Elements for Start and Stop Sounds -->
+    <audio id="startSound" src="BELLSTART.mp3"></audio>
+    <audio id="endSound" src="BELLSTOP.mp3"></audio>
 
-.controls {
-    margin-top: 30px;
-    display: flex;
-    gap: 20px;
-}
-
-.dark-button, .blue-button {
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-}
-
-.dark-button {
-    background-color: #10A37F;
-    color: #FFFFFF;
-    transition: background-color 0.3s ease;
-}
-
-.blue-button {
-    background-color: #007ACC;
-    color: #FFFFFF;
-}
-
-.dark-button:hover {
-    background-color: #1AB892;
-}
-
-.blue-button:hover {
-    background-color: #1A8BDB;
-}
-
-footer {
-    position: fixed;
-    bottom: 10px;
-    font-size: 0.9rem;
-    color: #666666;
-}
-
-@media (max-width: 768px) {
-    .timer {
-        font-size: 3rem;
-    }
-    .controls button {
-        font-size: 1rem;
-        padding: 10px 20px;
-    }
-}
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
