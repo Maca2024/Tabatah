@@ -2,75 +2,125 @@
 
 // Selectors
 const startButton = document.getElementById('startButton');
+const pauseButton = document.getElementById('pauseButton');
 const resetButton = document.getElementById('resetButton');
 const timeDisplay = document.getElementById('timeDisplay');
 const startSound = document.getElementById('startSound');
 const endSound = document.getElementById('endSound');
+const workDurationInput = document.getElementById('workDuration');
+const restDurationInput = document.getElementById('restDuration');
+const progressCircle = document.querySelector('.progress-ring__circle');
 
-// Timer settings
-let workTime = 20;  // 20 seconds of work
-let restTime = 10;  // 10 seconds of rest
-let isWorkPhase = true;  // Toggle between work and rest
-let countdown = 3;  // Last 3 seconds countdown
+// Timer instellingen
+let workTime = parseInt(workDurationInput.value);
+let restTime = parseInt(restDurationInput.value);
+let isWorkPhase = true;
+let currentTime = workTime;
 let timerInterval;
+let isPaused = false;
 
-// Start the Timer
+// Voortgangscirkel instellen
+const radius = progressCircle.r.baseVal.value;
+const circumference = radius * 2 * Math.PI;
+progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+progressCircle.style.strokeDashoffset = circumference;
+
+// Voortgang bijwerken
+function setProgress(percent) {
+    const offset = circumference - (percent / 100) * circumference;
+    progressCircle.style.strokeDashoffset = offset;
+}
+
+// Timer starten
 function startTimer() {
-    playStartSound();  // Play sound at the start of the work period
-    let currentTime = isWorkPhase ? workTime : restTime;
+    if (isPaused) {
+        isPaused = false;
+    } else {
+        workTime = parseInt(workDurationInput.value);
+        restTime = parseInt(restDurationInput.value);
+        currentTime = isWorkPhase ? workTime : restTime;
+        timeDisplay.textContent = formatTime(currentTime);
+        playStartSound();
+    }
 
     timerInterval = setInterval(() => {
-        // Countdown logic
         if (currentTime > 0) {
             currentTime--;
             timeDisplay.textContent = formatTime(currentTime);
-
-            // Play countdown sound in the last 3 seconds
-            if (currentTime <= countdown && isWorkPhase) {
-                playCountdownSound();
-            }
+            let totalTime = isWorkPhase ? workTime : restTime;
+            let percent = ((totalTime - currentTime) / totalTime) * 100;
+            setProgress(percent);
         } else {
-            // Switch between work/rest phases
             clearInterval(timerInterval);
             isWorkPhase = !isWorkPhase;
+            currentTime = isWorkPhase ? workTime : restTime;
+            timeDisplay.textContent = formatTime(currentTime);
             if (isWorkPhase) {
-                playStartSound();  // New work period
-                currentTime = workTime;
+                playStartSound();
             } else {
-                playEndSound();  // End of work, enter rest period
-                currentTime = restTime;
+                playEndSound();
             }
-            startTimer();  // Restart timer for next phase
+            setProgress(0);
+            startTimer();
         }
-    }, 1000);  // 1-second interval
+    }, 1000);
 }
 
-// Play start sound
+// Timer pauzeren
+function pauseTimer() {
+    clearInterval(timerInterval);
+    isPaused = true;
+}
+
+// Timer resetten
+function resetTimer() {
+    clearInterval(timerInterval);
+    isWorkPhase = true;
+    isPaused = false;
+    workTime = parseInt(workDurationInput.value);
+    restTime = parseInt(restDurationInput.value);
+    currentTime = workTime;
+    timeDisplay.textContent = formatTime(currentTime);
+    setProgress(0);
+}
+
+// Startgeluid afspelen
 function playStartSound() {
     startSound.play();
 }
 
-// Play end sound
+// Eindgeluid afspelen
 function playEndSound() {
     endSound.play();
 }
 
-// Reset the Timer
-function resetTimer() {
-    clearInterval(timerInterval);
-    isWorkPhase = true;
-    timeDisplay.textContent = "00:20";  // Reset display
-}
-
-// Helper function to format time
+// Helperfunctie om tijd te formatteren
 function formatTime(seconds) {
-    return seconds < 10 ? `00:0${seconds}` : `00:${seconds}`;
+    let mins = Math.floor(seconds / 60);
+    let secs = seconds % 60;
+    mins = mins < 10 ? `0${mins}` : mins;
+    secs = secs < 10 ? `0${secs}` : secs;
+    return `${mins}:${secs}`;
 }
 
 // Event Listeners
 startButton.addEventListener('click', () => {
-    startButton.disabled = true;  // Disable start button once timer begins
+    startButton.disabled = true;
+    pauseButton.disabled = false;
     startTimer();
 });
 
-resetButton.addEventListener('click', resetTimer);
+pauseButton.addEventListener('click', () => {
+    pauseButton.disabled = true;
+    startButton.disabled = false;
+    pauseTimer();
+});
+
+resetButton.addEventListener('click', () => {
+    startButton.disabled = false;
+    pauseButton.disabled = true;
+    resetTimer();
+});
+
+// Pauzeknop initialiseren als uitgeschakeld
+pauseButton.disabled = true;
