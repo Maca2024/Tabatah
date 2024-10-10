@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OERTIMER - Ultimate Tabata Timer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <img src="OERLOGO.png" alt="OERTIMER Logo" class="logo">
+        </div>
+    </header>
+
+    <main>
+        <div class="timer-container">
+            <div id="timeDisplay" class="timer">00:20</div>
+            <div class="progress-ring">
+                <!-- SVG progress ring for the countdown (optional for better UI) -->
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="startButton" class="dark-button">Start</button>
+            <button id="resetButton" class="blue-button">Reset</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>OERTIMER &copy; 2024</p>
+    </footer>
+
+    <!-- Audio Elements -->
+    <audio id="startSound" src="BELLSTART.mp3"></audio>
+    <audio id="endSound" src="BELLSTOP.mp3"></audio>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
