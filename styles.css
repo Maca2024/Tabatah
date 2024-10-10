@@ -1,0 +1,86 @@
+/* styles.css */
+body {
+    background-color: #1E1E1E;
+    color: #E1E1E1;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+header {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.logo {
+    width: 150px;
+    height: auto;
+}
+
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.timer {
+    font-size: 5rem;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.controls {
+    margin-top: 30px;
+    display: flex;
+    gap: 20px;
+}
+
+.dark-button, .blue-button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.dark-button {
+    background-color: #10A37F;
+    color: #FFFFFF;
+    transition: background-color 0.3s ease;
+}
+
+.blue-button {
+    background-color: #007ACC;
+    color: #FFFFFF;
+}
+
+.dark-button:hover {
+    background-color: #1AB892;
+}
+
+.blue-button:hover {
+    background-color: #1A8BDB;
+}
+
+footer {
+    position: fixed;
+    bottom: 10px;
+    font-size: 0.9rem;
+    color: #666666;
+}
+
+@media (max-width: 768px) {
+    .timer {
+        font-size: 3rem;
+    }
+    .controls button {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+}
