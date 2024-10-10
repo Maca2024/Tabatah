@@ -5,15 +5,19 @@ const startButton = document.getElementById('startButton');
 const pauseButton = document.getElementById('pauseButton');
 const resetButton = document.getElementById('resetButton');
 const timeDisplay = document.getElementById('timeDisplay');
+const phaseDisplay = document.getElementById('phaseDisplay');
 const startSound = document.getElementById('startSound');
 const endSound = document.getElementById('endSound');
 const workDurationInput = document.getElementById('workDuration');
 const restDurationInput = document.getElementById('restDuration');
+const roundsInput = document.getElementById('rounds');
 const progressCircle = document.querySelector('.progress-ring__circle');
 
 // Timer instellingen
 let workTime = parseInt(workDurationInput.value);
 let restTime = parseInt(restDurationInput.value);
+let totalRounds = parseInt(roundsInput.value);
+let currentRound = 1;
 let isWorkPhase = true;
 let currentTime = workTime;
 let timerInterval;
@@ -38,10 +42,18 @@ function startTimer() {
     } else {
         workTime = parseInt(workDurationInput.value);
         restTime = parseInt(restDurationInput.value);
+        totalRounds = parseInt(roundsInput.value);
         currentTime = isWorkPhase ? workTime : restTime;
         timeDisplay.textContent = formatTime(currentTime);
+        phaseDisplay.textContent = isWorkPhase ? 'Werkfase' : 'Rustfase';
         playStartSound();
     }
+
+    startButton.disabled = true;
+    pauseButton.disabled = false;
+    workDurationInput.disabled = true;
+    restDurationInput.disabled = true;
+    roundsInput.disabled = true;
 
     timerInterval = setInterval(() => {
         if (currentTime > 0) {
@@ -52,9 +64,28 @@ function startTimer() {
             setProgress(percent);
         } else {
             clearInterval(timerInterval);
+
+            // Check of alle rondes zijn voltooid
+            if (!isWorkPhase) {
+                if (currentRound >= totalRounds) {
+                    // Timer is voltooid
+                    playEndSound();
+                    timeDisplay.textContent = 'Klaar!';
+                    phaseDisplay.textContent = '';
+                    startButton.disabled = true;
+                    pauseButton.disabled = true;
+                    return;
+                } else {
+                    currentRound++;
+                }
+            }
+
+            // Wisselen tussen werk- en rustfase
             isWorkPhase = !isWorkPhase;
             currentTime = isWorkPhase ? workTime : restTime;
             timeDisplay.textContent = formatTime(currentTime);
+            phaseDisplay.textContent = isWorkPhase ? 'Werkfase' : 'Rustfase';
+
             if (isWorkPhase) {
                 playStartSound();
             } else {
@@ -70,6 +101,8 @@ function startTimer() {
 function pauseTimer() {
     clearInterval(timerInterval);
     isPaused = true;
+    startButton.disabled = false;
+    pauseButton.disabled = true;
 }
 
 // Timer resetten
@@ -77,20 +110,31 @@ function resetTimer() {
     clearInterval(timerInterval);
     isWorkPhase = true;
     isPaused = false;
+    currentRound = 1;
     workTime = parseInt(workDurationInput.value);
     restTime = parseInt(restDurationInput.value);
+    totalRounds = parseInt(roundsInput.value);
     currentTime = workTime;
     timeDisplay.textContent = formatTime(currentTime);
+    phaseDisplay.textContent = 'Werkfase';
     setProgress(0);
+
+    startButton.disabled = false;
+    pauseButton.disabled = true;
+    workDurationInput.disabled = false;
+    restDurationInput.disabled = false;
+    roundsInput.disabled = false;
 }
 
 // Startgeluid afspelen
 function playStartSound() {
+    startSound.currentTime = 0;
     startSound.play();
 }
 
 // Eindgeluid afspelen
 function playEndSound() {
+    endSound.currentTime = 0;
     endSound.play();
 }
 
@@ -104,23 +148,6 @@ function formatTime(seconds) {
 }
 
 // Event Listeners
-startButton.addEventListener('click', () => {
-    startButton.disabled = true;
-    pauseButton.disabled = false;
-    startTimer();
-});
-
-pauseButton.addEventListener('click', () => {
-    pauseButton.disabled = true;
-    startButton.disabled = false;
-    pauseTimer();
-});
-
-resetButton.addEventListener('click', () => {
-    startButton.disabled = false;
-    pauseButton.disabled = true;
-    resetTimer();
-});
-
-// Pauzeknop initialiseren als uitgeschakeld
-pauseButton.disabled = true;
+startButton.addEventListener('click', startTimer);
+pauseButton.addEventListener('click', pauseTimer);
+resetButton.addEventListener('click', resetTimer);
